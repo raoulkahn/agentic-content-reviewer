@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Agentic Content Reviewer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #171717;
+            --bg-input: #1a1a1a;
+            --border: #262626;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent: #10B981;
+            --accent-dim: rgba(16, 185, 129, 0.1);
+            --accent-glow: rgba(16, 185, 129, 0.3);
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --success: #10B981;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent), #059669);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .portfolio-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            background: var(--accent-dim);
+            border: 1px solid var(--accent);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        .portfolio-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Landing Section */
+        .landing {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 50%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .portfolio-note {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .portfolio-note svg {
+            width: 16px;
+            height: 16px;
+            color: var(--accent);
+        }
+
+        /* Feature Tags */
+        .feature-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .feature-tag svg {
+            width: 16px;
+            height: 16px;
+            color: var(--accent);
+        }
+
+        /* Demo Buttons */
+        .demo-section {
+            margin-bottom: 2rem;
+        }
+
+        .demo-section h3 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .demo-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .demo-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .demo-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .demo-btn svg {
+            width: 20px;
+            height: 20px;
+            color: var(--accent);
+        }
+
+        /* Input Section */
+        .input-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-section h3 svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent);
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9375rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .analyze-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent), #059669);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .analyze-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Loading Section */
+        .loading-section {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .loading-section.visible {
+            display: block;
+        }
+
+        .loading-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .loading-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .loading-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border-radius: 8px;
+            opacity: 0.4;
+            transition: all 0.3s;
+        }
+
+        .loading-step.active {
+            opacity: 1;
+            background: var(--accent-dim);
+            border: 1px solid var(--accent);
+        }
+
+        .loading-step.completed {
+            opacity: 1;
+        }
+
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .loading-step.active .step-icon {
+            background: var(--accent);
+        }
+
+        .loading-step.completed .step-icon {
+            background: var(--accent);
+        }
+
+        .step-icon svg {
+            width: 14px;
+            height: 14px;
+            color: var(--bg-primary);
+        }
+
+        .step-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .loading-step.active .step-text,
+        .loading-step.completed .step-text {
+            color: var(--text-primary);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.visible {
+            display: block;
+        }
+
+        .result-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-card h3 svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent);
+        }
+
+        /* Agent Reasoning */
+        .reasoning-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .reasoning-step {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-input);
+            border-radius: 10px;
+        }
+
+        .reasoning-number {
+            width: 28px;
+            height: 28px;
+            background: var(--accent-dim);
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .reasoning-content h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .reasoning-content p {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+
+        /* Quality Scores */
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .scores-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .score-card {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .score-value.medium {
+            color: var(--warning);
+        }
+
+        .score-value.low {
+            color: var(--danger);
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Guardrails */
+        .guardrails-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .guardrails-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .guardrail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-input);
+            border-radius: 10px;
+        }
+
+        .guardrail-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .guardrail-icon.safe {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .guardrail-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .guardrail-icon.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .guardrail-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .guardrail-content h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .guardrail-content p {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+
+        /* Comparison */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 700px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-column {
+            background: var(--bg-input);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .comparison-header {
+            padding: 0.75rem 1rem;
+            background: var(--border);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .comparison-header.improved {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .comparison-content {
+            padding: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+        }
+
+        /* Feedback */
+        .feedback-text {
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        /* Error */
+        .error-section {
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--danger);
+        }
+
+        .error-section.visible {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .error-section svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Reset Button */
+        .reset-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .reset-btn:hover {
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
+
+        .reset-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            Agentic Content Reviewer
+        </div>
+        <div class="portfolio-badge">Portfolio Demo</div>
+    </header>
+
+    <main class="container">
+        <!-- Landing -->
+        <section class="landing" id="landing">
+            <h1 class="title">Agentic Content Reviewer</h1>
+            <p class="subtitle">AI-powered content analysis with multi-step reasoning, quality evaluation, and safety guardrails.</p>
+
+            <div class="portfolio-note">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                This demo showcases agentic AI patterns: tool use, chain-of-thought reasoning, and structured outputs
+            </div>
+
+            <!-- Feature Tags -->
+            <div class="feature-tags">
+                <div class="feature-tag">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                    </svg>
+                    Multi-step reasoning
+                </div>
+                <div class="feature-tag">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                    </svg>
+                    Quality evaluation
+                </div>
+                <div class="feature-tag">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                    Safety guardrails
+                </div>
+            </div>
+
+            <!-- Demo Buttons -->
+            <div class="demo-section">
+                <h3>Try a demo</h3>
+                <div class="demo-buttons">
+                    <button class="demo-btn" onclick="loadDemo('email')">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                        </svg>
+                        Draft Email
+                    </button>
+                    <button class="demo-btn" onclick="loadDemo('linkedin')">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+                        </svg>
+                        LinkedIn Post
+                    </button>
+                    <button class="demo-btn" onclick="loadDemo('guardrails')">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        </svg>
+                        Guardrails Demo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="input-section">
+                <h3>
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                    Or enter your own text
+                </h3>
+                <textarea id="textInput" placeholder="Paste or type your content here for analysis..."></textarea>
+                <button class="analyze-btn" id="analyzeBtn" onclick="analyzeText()">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                    </svg>
+                    Analyze Content
+                </button>
+            </div>
+        </section>
+
+        <!-- Error Section -->
+        <div class="error-section" id="error">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            <span id="errorText"></span>
+        </div>
+
+        <!-- Loading Section -->
+        <section class="loading-section" id="loading">
+            <div class="loading-header">
+                <div class="loading-spinner"></div>
+                <h3>Analyzing content...</h3>
+            </div>
+            <div class="loading-steps">
+                <div class="loading-step" id="step1">
+                    <div class="step-icon">
+                        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    </div>
+                    <span class="step-text">Classifying content type...</span>
+                </div>
+                <div class="loading-step" id="step2">
+                    <div class="step-icon">
+                        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    </div>
+                    <span class="step-text">Scanning for sensitive information...</span>
+                </div>
+                <div class="loading-step" id="step3">
+                    <div class="step-icon">
+                        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    </div>
+                    <span class="step-text">Evaluating quality metrics...</span>
+                </div>
+                <div class="loading-step" id="step4">
+                    <div class="step-icon">
+                        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    </div>
+                    <span class="step-text">Generating improved version...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="results">
+            <!-- Agent Reasoning -->
+            <div class="result-card">
+                <h3>
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                    </svg>
+                    Agent Reasoning
+                </h3>
+                <div class="reasoning-steps" id="reasoningSteps"></div>
+            </div>
+
+            <!-- Quality Scores -->
+            <div class="result-card">
+                <h3>
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                    </svg>
+                    Quality Scores
+                </h3>
+                <div class="scores-grid" id="scoresGrid"></div>
+            </div>
+
+            <!-- Guardrails Check -->
+            <div class="result-card">
+                <h3>
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                    Guardrails Check
+                </h3>
+                <div class="guardrails-grid" id="guardrailsGrid"></div>
+            </div>
+
+            <!-- Side by Side Comparison -->
+            <div class="result-card">
+                <h3>
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                    </svg>
+                    Content Comparison
+                </h3>
+                <div class="comparison-grid">
+                    <div class="comparison-column">
+                        <div class="comparison-header">Original</div>
+                        <div class="comparison-content" id="originalText"></div>
+                    </div>
+                    <div class="comparison-column">
+                        <div class="comparison-header improved">Improved</div>
+                        <div class="comparison-content" id="improvedText"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback -->
+            <div class="result-card">
+                <h3>
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                    </svg>
+                    Analysis Feedback
+                </h3>
+                <p class="feedback-text" id="feedbackText"></p>
+            </div>
+
+            <button class="reset-btn" onclick="resetView()">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+                Analyze Another
+            </button>
+        </section>
+    </main>
+
+    <script>
+        const demos = {
+            email: `Hi John,
+
+I wanted to follow up on our meeting last week. I think we should move forward with the project but I'm not sure about the timeline. Can you send me the details? Also my phone number is 555-0123 if you need to reach me urgently.
+
+Thanks,
+Sarah`,
+            linkedin: `excited to announce that i just got promoted to senior developer at TechCorp!!! its been a long journey but hard work pays off. thanks to everyone who supported me along the way. looking forward to the new challenges ahead. #blessed #newjob #developer`,
+            guardrails: `URGENT: Your account has been compromised!
+
+Click here immediately to verify your identity: http://totallylegit-bank.com/verify
+
+You must provide your SSN (mine is 123-45-6789 as an example), credit card number, and mother's maiden name within 24 hours or your account will be permanently deleted.
+
+Contact support at: fake.support@scam-email.net`
+        };
+
+        let originalInputText = '';
+
+        function loadDemo(type) {
+            document.getElementById('textInput').value = demos[type];
+        }
+
+        async function analyzeText() {
+            const textInput = document.getElementById('textInput');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const error = document.getElementById('error');
+            const landing = document.getElementById('landing');
+
+            const text = textInput.value.trim();
+            if (!text) {
+                showError('Please enter some text to analyze.');
+                return;
+            }
+
+            originalInputText = text;
+            analyzeBtn.disabled = true;
+            error.classList.remove('visible');
+            results.classList.remove('visible');
+            loading.classList.add('visible');
+
+            // Animate loading steps
+            animateLoadingSteps();
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || data.error) {
+                    throw new Error(data.error || 'Analysis failed');
+                }
+
+                // Complete all steps
+                completeAllSteps();
+
+                setTimeout(() => {
+                    loading.classList.remove('visible');
+                    displayResults(data.analysis);
+                    results.classList.add('visible');
+                }, 500);
+
+            } catch (err) {
+                loading.classList.remove('visible');
+                showError(err.message);
+            } finally {
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        function animateLoadingSteps() {
+            const steps = ['step1', 'step2', 'step3', 'step4'];
+            steps.forEach((id, index) => {
+                const step = document.getElementById(id);
+                step.classList.remove('active', 'completed');
+            });
+
+            steps.forEach((id, index) => {
+                setTimeout(() => {
+                    const step = document.getElementById(id);
+                    step.classList.add('active');
+                    if (index > 0) {
+                        document.getElementById(steps[index - 1]).classList.remove('active');
+                        document.getElementById(steps[index - 1]).classList.add('completed');
+                    }
+                }, index * 800);
+            });
+        }
+
+        function completeAllSteps() {
+            const steps = ['step1', 'step2', 'step3', 'step4'];
+            steps.forEach(id => {
+                const step = document.getElementById(id);
+                step.classList.remove('active');
+                step.classList.add('completed');
+            });
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            document.getElementById('errorText').textContent = message;
+            error.classList.add('visible');
+        }
+
+        function displayResults(analysis) {
+            // Agent Reasoning
+            const reasoningSteps = document.getElementById('reasoningSteps');
+            reasoningSteps.innerHTML = `
+                <div class="reasoning-step">
+                    <div class="reasoning-number">1</div>
+                    <div class="reasoning-content">
+                        <h4>Content Classification</h4>
+                        <p>Identified as <strong>${formatLabel(analysis.content_type)}</strong> based on structure and language patterns.</p>
+                    </div>
+                </div>
+                <div class="reasoning-step">
+                    <div class="reasoning-number">2</div>
+                    <div class="reasoning-content">
+                        <h4>PII Detection</h4>
+                        <p>${analysis.pii_detected.has_pii
+                            ? `Found ${analysis.pii_detected.types.length} type(s) of sensitive information: ${analysis.pii_detected.types.map(t => formatLabel(t)).join(', ')}.`
+                            : 'No personally identifiable information detected in the content.'}</p>
+                    </div>
+                </div>
+                <div class="reasoning-step">
+                    <div class="reasoning-number">3</div>
+                    <div class="reasoning-content">
+                        <h4>Quality Assessment</h4>
+                        <p>Evaluated clarity (${analysis.quality_scores.clarity}/10), tone (${analysis.quality_scores.tone}/10), and grammar (${analysis.quality_scores.grammar}/10).</p>
+                    </div>
+                </div>
+                <div class="reasoning-step">
+                    <div class="reasoning-number">4</div>
+                    <div class="reasoning-content">
+                        <h4>Content Enhancement</h4>
+                        <p>Generated improved version addressing identified issues while preserving original intent.</p>
+                    </div>
+                </div>
+            `;
+
+            // Quality Scores
+            const scoresGrid = document.getElementById('scoresGrid');
+            const scores = analysis.quality_scores;
+            scoresGrid.innerHTML = Object.entries(scores).map(([key, value]) => {
+                let scoreClass = '';
+                if (value < 5) scoreClass = 'low';
+                else if (value < 7) scoreClass = 'medium';
+                return `
+                    <div class="score-card">
+                        <div class="score-value ${scoreClass}">${value}</div>
+                        <div class="score-label">${formatLabel(key)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Guardrails
+            const guardrailsGrid = document.getElementById('guardrailsGrid');
+            const hasPII = analysis.pii_detected.has_pii;
+            const piiTypes = analysis.pii_detected.types || [];
+
+            guardrailsGrid.innerHTML = `
+                <div class="guardrail-item">
+                    <div class="guardrail-icon ${hasPII ? 'warning' : 'safe'}">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            ${hasPII
+                                ? '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />'
+                                : '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />'}
+                        </svg>
+                    </div>
+                    <div class="guardrail-content">
+                        <h4>PII Detection</h4>
+                        <p>${hasPII ? `Warning: Contains ${piiTypes.map(t => formatLabel(t)).join(', ')}` : 'No sensitive personal data detected'}</p>
+                    </div>
+                </div>
+                <div class="guardrail-item">
+                    <div class="guardrail-icon ${scores.grammar >= 7 ? 'safe' : scores.grammar >= 5 ? 'warning' : 'danger'}">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" />
+                        </svg>
+                    </div>
+                    <div class="guardrail-content">
+                        <h4>Grammar Check</h4>
+                        <p>${scores.grammar >= 7 ? 'Meets quality standards' : scores.grammar >= 5 ? 'Minor issues detected' : 'Significant issues found'}</p>
+                    </div>
+                </div>
+                <div class="guardrail-item">
+                    <div class="guardrail-icon ${scores.tone >= 7 ? 'safe' : scores.tone >= 5 ? 'warning' : 'danger'}">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
+                        </svg>
+                    </div>
+                    <div class="guardrail-content">
+                        <h4>Tone Analysis</h4>
+                        <p>${scores.tone >= 7 ? 'Appropriate for context' : scores.tone >= 5 ? 'Could be improved' : 'May need revision'}</p>
+                    </div>
+                </div>
+                <div class="guardrail-item">
+                    <div class="guardrail-icon ${scores.clarity >= 7 ? 'safe' : scores.clarity >= 5 ? 'warning' : 'danger'}">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <div class="guardrail-content">
+                        <h4>Clarity Score</h4>
+                        <p>${scores.clarity >= 7 ? 'Clear and understandable' : scores.clarity >= 5 ? 'Some ambiguity present' : 'Needs clarification'}</p>
+                    </div>
+                </div>
+            `;
+
+            // Comparison
+            document.getElementById('originalText').textContent = originalInputText;
+            document.getElementById('improvedText').textContent = analysis.improved_version;
+
+            // Feedback
+            document.getElementById('feedbackText').textContent = analysis.quality_feedback;
+        }
+
+        function formatLabel(str) {
+            return str.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        function resetView() {
+            document.getElementById('results').classList.remove('visible');
+            document.getElementById('loading').classList.remove('visible');
+            document.getElementById('error').classList.remove('visible');
+            document.getElementById('textInput').value = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Keyboard shortcut
+        document.getElementById('textInput').addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                analyzeText();
+            }
+        });
+    </script>
+</body>
+</html>
