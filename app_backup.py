@@ -17,27 +17,11 @@ Text to analyze:
 </text>
 
 Provide your analysis as a JSON object with these fields:
-1. "content_type": Classify the content (e.g., "email", "article", "social_media_post", "technical_documentation", "marketing_copy", "personal_message", "formal_letter", "creative_writing", "resume", "other")
+1. "content_type": Classify the content (e.g., "email", "article", "social_media_post", "technical_documentation", "marketing_copy", "personal_message", "formal_letter", "creative_writing", "other")
 2. "pii_detected": An object containing:
-   - "has_pii": boolean indicating if SENSITIVE PII was found
-   - "types": array of PII types found
+   - "has_pii": boolean indicating if PII was found
+   - "types": array of PII types found (e.g., "email_address", "phone_number", "social_security_number", "credit_card", "address", "full_name", "date_of_birth")
    - "locations": array of brief descriptions of where PII appears (do not include the actual PII values)
-   
-   IMPORTANT - Only flag these as PII:
-   - Social Security Numbers (SSN)
-   - Credit card numbers
-   - Bank account numbers
-   - Full home addresses (street address with city/state/zip)
-   - Phone numbers
-   
-   DO NOT flag these as PII (they are normal professional information):
-   - First names or last names alone
-   - Company names or employer names
-   - Job titles or professional roles
-   - Professional/work email addresses
-   - LinkedIn URLs or professional profiles
-   - Dates of employment
-   
 3. "quality_scores": An object with scores from 1-10 for:
    - "clarity": How clear and understandable the text is
    - "tone": How appropriate and consistent the tone is
