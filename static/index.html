@@ -587,6 +587,12 @@
             letter-spacing: 0.05em;
         }
 
+        .scores-note {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+        }
+
         /* Guardrails */
         .guardrails-grid {
             display: grid;
@@ -946,6 +952,7 @@
                     Quality Scores
                 </h3>
                 <div class="scores-grid" id="scoresGrid"></div>
+                <p class="scores-note">Scale: 1–10. Overall weighted toward grammar and clarity for professional documents.</p>
             </div>
 
             <!-- Guardrails -->
@@ -1069,7 +1076,7 @@ Stanford University - B.S. Computer Science, 2015`
             setTimeout(() => {
                 window.scrollTo({
                     top: document.getElementById('loading').offsetTop - 20,
-                    behavior: 'instant'
+                    behavior: 'smooth'
                 });
             }, 0);
 
@@ -1096,9 +1103,12 @@ Stanford University - B.S. Computer Science, 2015`
                     loading.classList.remove('visible');
                     results.classList.remove('loading');
                     displayResults(data.analysis);
+                    // Clear textarea for next input
+                    textInput.value = '';
+                    updateAnalyzeButton();
                     // Scroll to Agent Reasoning section
                     requestAnimationFrame(() => {
-                        document.getElementById('results').scrollIntoView({ behavior: 'instant', block: 'start' });
+                        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
                     });
                 }, 500);
 
@@ -1213,6 +1223,12 @@ Stanford University - B.S. Computer Science, 2015`
             const guardrailsGrid = document.getElementById('guardrailsGrid');
             const hasPII = analysis.pii_detected.has_pii;
             const piiTypes = analysis.pii_detected.types || [];
+            
+            // Get dynamic feedback with fallbacks
+            const feedback = analysis.guardrails_feedback || {};
+            const grammarFeedback = feedback.grammar_feedback || (scores.grammar >= 7 ? 'Meets quality standards' : scores.grammar >= 5 ? 'Minor issues detected' : 'Significant issues found');
+            const toneFeedback = feedback.tone_feedback || (scores.tone >= 7 ? 'Appropriate for context' : scores.tone >= 5 ? 'Could be improved' : 'May need revision');
+            const clarityFeedback = feedback.clarity_feedback || (scores.clarity >= 7 ? 'Clear and understandable' : scores.clarity >= 5 ? 'Some ambiguity present' : 'Could be clearer');
 
             guardrailsGrid.innerHTML = `
                 <div class="guardrail-item">
@@ -1236,7 +1252,7 @@ Stanford University - B.S. Computer Science, 2015`
                     </div>
                     <div class="guardrail-content">
                         <h4>Grammar Check</h4>
-                        <p>${scores.grammar >= 7 ? 'Meets quality standards' : scores.grammar >= 5 ? 'Minor issues detected' : 'Significant issues found'}</p>
+                        <p>${grammarFeedback}</p>
                     </div>
                 </div>
                 <div class="guardrail-item">
@@ -1247,7 +1263,7 @@ Stanford University - B.S. Computer Science, 2015`
                     </div>
                     <div class="guardrail-content">
                         <h4>Tone Analysis</h4>
-                        <p>${scores.tone >= 7 ? 'Appropriate for context' : scores.tone >= 5 ? 'Could be improved' : 'May need revision'}</p>
+                        <p>${toneFeedback}</p>
                     </div>
                 </div>
                 <div class="guardrail-item">
@@ -1259,7 +1275,7 @@ Stanford University - B.S. Computer Science, 2015`
                     </div>
                     <div class="guardrail-content">
                         <h4>Clarity Score</h4>
-                        <p>${scores.clarity >= 7 ? 'Clear and understandable' : scores.clarity >= 5 ? 'Some ambiguity present' : 'Needs clarification'}</p>
+                        <p>${clarityFeedback}</p>
                     </div>
                 </div>
             `;

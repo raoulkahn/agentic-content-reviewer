@@ -43,8 +43,12 @@ Provide your analysis as a JSON object with these fields:
    - "tone": How appropriate and consistent the tone is
    - "grammar": Grammatical correctness
    - "overall": Overall quality score
-4. "quality_feedback": Brief explanation of the scores and areas for improvement
-5. "improved_version": A rewritten version of the text with improvements to clarity, tone, and grammar while preserving the original meaning and intent
+4. "guardrails_feedback": An object with brief, specific feedback (max 6 words each) explaining WHY each score was given:
+   - "grammar_feedback": Specific grammar issues found (e.g., "Missing apostrophes and commas", "Run-on sentences throughout", "No issues detected")
+   - "tone_feedback": Specific tone observations (e.g., "Too casual for business context", "Overly formal for audience", "Appropriate and professional")
+   - "clarity_feedback": Specific clarity issues (e.g., "Vague claims lack specifics", "Well-structured and focused", "Rambling without clear point")
+5. "quality_feedback": Brief explanation of the scores and areas for improvement
+6. "improved_version": A rewritten version of the text with improvements to clarity, tone, and grammar while preserving the original meaning and intent
 
 Respond ONLY with the JSON object, no additional text."""
 
